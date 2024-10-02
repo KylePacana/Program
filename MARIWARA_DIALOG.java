@@ -17,10 +17,10 @@ public class MARIWARA_DIALOG {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String allTransactions = "";
+                     String allTransactions = "";
         int transactionCount = 0;
 
-        while (true) {  // Loop to restart for new customers
+        while (true) {
             int choice;
             int num1 = 20;
             int num2 = 35;
@@ -31,14 +31,11 @@ public class MARIWARA_DIALOG {
             double cash = 0.0;
             double totalAmount = 0.0;
             double result;
-
-            // String to store purchased items for the receipt
             String purchasedItems = "";
 
             JOptionPane.showMessageDialog(null, "Welcome to Mariwara Store");
 
-            while (true) {  // Loop to handle product selection
-                // Show product options
+            while (true) {
                 String menu = "Choose the product you want to purchase:\n"
                         + "1. Kwek-kwek ------ $20\n"
                         + "2. Choco Lanay ---- $35\n"
@@ -46,37 +43,42 @@ public class MARIWARA_DIALOG {
                         + "4. Iphone promax -- $12\n"
                         + "5. Papaitan ------- $315";
 
-                // Ask for item choice and validate
                 String choiceInput = JOptionPane.showInputDialog(menu + "\nEnter Item number (1-5):");
+                choice = -1;
 
-                try {
-                    choice = Integer.parseInt(choiceInput);
-
-                    if (choice < 1 || choice > 5) {
-                        JOptionPane.showMessageDialog(null, "Invalid choice! Please select a valid item (1-5).");
-                        continue; // Restart the loop for product selection
+                if (choiceInput != null && choiceInput.length() == 1) {
+                    char charChoice = choiceInput.charAt(0);
+                    if (charChoice >= '1' && charChoice <= '5') {
+                        choice = Character.getNumericValue(charChoice);
                     }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a number (1-5).");
-                    continue; // Restart the loop for product selection
                 }
 
-                // Ask for quantity and validate
+                if (choice == -1) {
+                    JOptionPane.showMessageDialog(null, "Invalid choice! Please select a valid item (1-5).");
+                    continue;
+                }
+
                 String quantityInput = JOptionPane.showInputDialog("Enter the quantity:");
+                quantity = 0;
 
-                try {
-                    quantity = Integer.parseInt(quantityInput);
-
-                    if (quantity <= 0) {
-                        JOptionPane.showMessageDialog(null, "Invalid input! Please enter a valid quantity (positive integer).");
-                        continue; // Restart the loop for product selection
+                if (quantityInput != null && quantityInput.length() > 0) {
+                    boolean validQuantity = true;
+                    for (int i = 0; i < quantityInput.length(); i++) {
+                        if (!Character.isDigit(quantityInput.charAt(i))) {
+                            validQuantity = false;
+                            break;
+                        }
                     }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a valid number.");
-                    continue; // Restart the loop for product selection
+                    if (validQuantity) {
+                        quantity = Integer.parseInt(quantityInput);
+                    }
                 }
 
-                // Process the chosen item
+                if (quantity <= 0) {
+                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a valid quantity (positive integer).");
+                    continue;
+                }
+
                 switch (choice) {
                     case 1:
                         result = num1 * quantity;
@@ -105,61 +107,63 @@ public class MARIWARA_DIALOG {
                         break;
                 }
 
-                // Ask if they want to buy more items
                 String moreItemsInput = JOptionPane.showInputDialog("Do you want to buy more items? (1 for Yes, 0 for No):");
-                try {
+                if (moreItemsInput != null && (moreItemsInput.equals("1") || moreItemsInput.equals("0"))) {
                     choice = Integer.parseInt(moreItemsInput);
                     if (choice == 0) {
-                        break;  // Exit the product selection loop
+                        break;
                     }
-                } catch (NumberFormatException e) {
+                } else {
                     JOptionPane.showMessageDialog(null, "Invalid input! Please enter 1 for Yes or 0 for No.");
                 }
             }
 
-            // Show final total
             JOptionPane.showMessageDialog(null, "Your total purchase is: $" + totalAmount);
 
-            // Ask for the amount of cash and ensure it's sufficient, with validation
-            int attempts = 3;  // Number of attempts allowed
+            int attempts = 3;
             boolean sufficientCash = false;
 
             for (int i = 0; i < attempts; i++) {
                 String cashInput = JOptionPane.showInputDialog("Enter the amount of cash:");
 
-                try {
-                    cash = Double.parseDouble(cashInput);
-
-                    if (cash >= totalAmount) {
-                        sufficientCash = true;
-                        break;  // Sufficient cash, exit the loop
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Insufficient cash. You have " + (attempts - i - 1) + " attempt(s) left.");
+                if (cashInput != null && cashInput.length() > 0) {
+                    boolean validCash = true;
+                    for (int j = 0; j < cashInput.length(); j++) {
+                        if (!Character.isDigit(cashInput.charAt(j)) && cashInput.charAt(j) != '.') {
+                            validCash = false;
+                            break;
+                        }
                     }
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter a valid cash amount.");
+                    if (validCash) {
+                        cash = Double.parseDouble(cashInput);
+                        if (cash >= totalAmount) {
+                            sufficientCash = true;
+                            break;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Insufficient cash. You have " + (attempts - i - 1) + " attempt(s) left.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid input! Please enter a valid cash amount.");
+                    }
                 }
             }
 
             if (!sufficientCash) {
                 JOptionPane.showMessageDialog(null, "Failed to provide sufficient cash after 3 attempts. Restarting from the main menu.");
-                continue;  // Restart the program from the main menu
+                continue;
             }
 
-            // Calculate change and display
             double change = cash - totalAmount;
             JOptionPane.showMessageDialog(null, "Your change is: $" + change);
 
-            // Ask if they want a receipt
             int receipt;
             while (true) {
                 String receiptInput = JOptionPane.showInputDialog("Do you want a receipt? (1 for Yes, 0 for No):");
-                try {
+                if (receiptInput != null && (receiptInput.equals("1") || receiptInput.equals("0"))) {
                     receipt = Integer.parseInt(receiptInput);
-                    break; // Valid input
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter 1 for Yes or 0 for No.");
+                    break;
                 }
+                JOptionPane.showMessageDialog(null, "Invalid input! Please enter 1 for Yes or 0 for No.");
             }
 
             String receiptDetails = "****** RECEIPT ********\n";
@@ -172,35 +176,30 @@ public class MARIWARA_DIALOG {
             receiptDetails += "Change: $" + change + "\n";
             receiptDetails += "**************************\n";
 
-            // Show receipt
             if (receipt == 1) {
                 JOptionPane.showMessageDialog(null, receiptDetails);
             } else {
                 JOptionPane.showMessageDialog(null, "Thank you for shopping! No receipt requested.");
             }
 
-            // Append the current transaction to the allTransactions string
             allTransactions += "Transaction " + (transactionCount + 1) + ":\n" + receiptDetails + "\n";
-            transactionCount++;  // Increment the transaction count
+            transactionCount++;
 
-            // Ask if there's a new customer
             int newCustomer;
             while (true) {
                 String newCustomerInput = JOptionPane.showInputDialog("Is there a new customer? (1 for Yes, 0 for No):");
-                try {
+                if (newCustomerInput != null && (newCustomerInput.equals("1") || newCustomerInput.equals("0"))) {
                     newCustomer = Integer.parseInt(newCustomerInput);
-                    break; // Valid input
-                } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter 1 for Yes or 0 for No.");
+                    break;
                 }
+                JOptionPane.showMessageDialog(null, "Invalid input! Please enter 1 for Yes or 0 for No.");
             }
 
             if (newCustomer == 0) {
-                break;  // End the program if no new customer
+                break;
             }
         }
 
-        // At the end of the day, show summary of all transactions
         if (transactionCount == 0) {
             JOptionPane.showMessageDialog(null, "No transactions occurred today.");
         } else {
